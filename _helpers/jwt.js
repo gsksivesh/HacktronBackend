@@ -5,22 +5,22 @@ const {UsersRepository} = require('../repositories');
 module.exports = jwt;
 
 function jwt() {
-    return expressJwt({secret: JWT_SECRET, isRevoked}).unless({
-        path: [
-            // public routes that don't require authentication
-            '/users/authenticate',
-            '/users/register'
-        ]
-    });
+  return expressJwt({secret: JWT_SECRET, isRevoked}).unless({
+    path: [
+      // public routes that don't require authentication
+      '/users/authenticate',
+      '/users/register'
+    ]
+  });
 }
 
 async function isRevoked(req, payload, done) {
-    const user = await UsersRepository.getByID(payload.sub);
+  const user = await UsersRepository.getByID(payload.sub);
 
-    // revoke token if user no longer exists
-    if (!user) {
-        return done(null, true);
-    }
+  // revoke token if user no longer exists
+  if (!user) {
+    return done(null, true);
+  }
 
-    done();
+  done();
 }
