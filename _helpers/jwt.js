@@ -1,12 +1,11 @@
 const expressJwt = require('express-jwt');
-const config = require('config.json');
-const userService = require('../users/user.service');
+const {JWT_SECRET} = require('../config');
+const {UsersRepository} = require('../repositories');
 
 module.exports = jwt;
 
 function jwt() {
-    const secret = config.secret;
-    return expressJwt({ secret, isRevoked }).unless({
+    return expressJwt({secret: JWT_SECRET, isRevoked}).unless({
         path: [
             // public routes that don't require authentication
             '/users/authenticate',
@@ -16,7 +15,7 @@ function jwt() {
 }
 
 async function isRevoked(req, payload, done) {
-    const user = await userService.getById(payload.sub);
+    const user = await UsersRepository.getByID(payload.sub);
 
     // revoke token if user no longer exists
     if (!user) {
@@ -24,4 +23,4 @@ async function isRevoked(req, payload, done) {
     }
 
     done();
-};
+}
