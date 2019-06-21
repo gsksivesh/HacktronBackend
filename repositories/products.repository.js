@@ -6,7 +6,7 @@ class ProductsRepository {
   }
 
   async getAllProducts() {
-    return this.model.find({}, {_id: 0}).exec();
+    return this.model.find().exec();
   }
 }
 
